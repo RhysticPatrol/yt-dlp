@@ -735,8 +735,8 @@ class PBSIE(InfoExtractor):
         # info['title'] is often incomplete (e.g. 'Full Episode', 'Episode 5', etc)
         # Try turning it to 'program - title' naming scheme if possible
         alt_title = info.get('program', {}).get('title')
-        if alt_title:
-            info['title'] = alt_title + ' - ' + re.sub(r'^' + alt_title + r'[\s\-:]+', '', info['title'])
+        if alt_title and info.get('title'):
+            info['title'] = alt_title + ' - ' + re.sub(r'^' + alt_title + r'[\s\-:]+', '', info.get('title', ''))
 
         description = info.get('description') or info.get(
             'program', {}).get('description') or description
@@ -744,7 +744,7 @@ class PBSIE(InfoExtractor):
         return {
             'id': video_id,
             'display_id': display_id,
-            'title': info['title'],
+            'title': info.get('title') or display_id,
             'description': description,
             'thumbnail': info.get('image_url'),
             'duration': int_or_none(info.get('duration')),

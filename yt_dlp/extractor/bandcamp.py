@@ -172,14 +172,18 @@ class BandcampIE(InfoExtractor):
                 for format_id, format_url in file_.items():
                     if not url_or_none(format_url):
                         continue
-                    ext, abr_str = format_id.split('-', 1)
+                    try:
+                        ext, abr_str = format_id.split('-', 1)
+                        abr = int_or_none(abr_str)
+                    except ValueError:
+                        ext, abr = format_id, None
                     formats.append({
                         'format_id': format_id,
                         'url': self._proto_relative_url(format_url, 'http:'),
                         'ext': ext,
                         'vcodec': 'none',
                         'acodec': ext,
-                        'abr': int_or_none(abr_str),
+                        'abr': abr,
                     })
             track = track_info.get('title')
             track_id = str_or_none(
