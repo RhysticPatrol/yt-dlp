@@ -428,7 +428,9 @@ class NiconicoIE(NiconicoBaseIE):
                 'actionTrackId': f'AAAAAAAAAA_{round(time_seconds() * 1000)}',
             }, expected_status=[400, 404])
 
-        api_data = api_resp['data']
+        api_data = api_resp.get('data')
+        if api_data is None:
+            raise ExtractorError('This video is device-restricted', expected=True)
         scheduled_time = traverse_obj(api_data, ('publishScheduledAt', {str}))
         status = traverse_obj(api_resp, ('meta', 'status', {int}))
 
